@@ -1,0 +1,53 @@
+exp_name: iemocap_txt_roberta_transformer_asp
+
+expert:
+  type: txt_experts
+
+  feat_root: 'text_roberta_merbench_FRAME'#这实际是文本
+  ext: .npy
+
+  input_dim: 1024
+  num_classes: 4
+
+  # ===== Typical: Transformer + Attentive Stats Pooling =====
+  encoder: transformer
+  pool: attn_stats
+
+  hidden_dim: 256
+  num_layers: 2
+  dropout: 0.35
+
+  # transformer-only
+  nhead: 4
+  ffn_dim: 1024
+
+  head: linear
+
+  # ===== Data reading =====
+  max_frames: 256
+  pad_mode: right
+  mmap: false
+
+  # ===== Frozen-feature augmentation =====
+  time_mask_prob: 0.35
+  time_mask_max_width: 12
+  time_mask_num: 2
+
+train:
+  epochs: 30
+  batch_size: 64
+  lr: 8.0e-4
+  weight_decay: 1.0e-4
+  scheduler: cosine
+  warmup_ratio: 0.05
+  grad_clip: 5.0
+  early_stop:
+    enabled: true
+    patience: 8
+    metric: uar
+
+loss:
+  type: weighted_ce
+
+log:
+  save_preds: true

@@ -1,0 +1,36 @@
+exp_name: iemocap_fusion_txt_hsemotion_pool_mlp
+expert:
+  type: fusion_av_pool_mlp
+  audio_feat_root: 'text_roberta_merbench_FRAME'#这实际是文本
+  audio_ext: .npy
+  audio_input_dim: 1024  # TODO
+  video_feat_root: 'video_hsemotion_enet_b2_7_seq_npz'
+  video_ext: .npz
+  video_feat_key: x
+  video_input_dim: 1408
+  num_classes: 4
+  hidden_dim: 256
+  dropout: 0.35
+  use_pos_enc: true
+  pos_max_len: 4000
+  num_layers_audio: 1
+  num_layers_video: 1
+  nhead: 4
+  ffn_dim: 1024
+  attn_hidden: 128
+  fusion_out_dim: 256
+  max_frames_audio: 128
+  max_frames_video: 300
+  pad_mode: right
+  pin_memory: true
+train:
+  epochs: 35
+  batch_size: 48
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  scheduler: cosine
+  warmup_ratio: 0.05
+  grad_clip: 5.0
+  early_stop: {enabled: true, patience: 10, metric: uar}
+loss: {type: weighted_ce}
+log: {save_preds: true}

@@ -1,0 +1,57 @@
+# IEMOCAP dataset config
+#
+# ✅ 统一开关：label_scheme
+#   - 4way: happy / sad / neutral / angry
+#           (excited 会在 build_iemocap_manifest_jsonl.py 里并入 happy)
+#   - 6way: happy / sad / neutral / angry / excited / frustrated
+#
+# 说明：scripts/train.py 会根据 label_scheme 自动覆盖：
+#   - manifest_path
+#   - labels
+#   - expert.num_classes
+# 所以跑四/六分类时，你只需要改这一行：label_scheme
+
+name: iemocap
+
+# ---- unified switch (edit this only) ----
+label_scheme: 4way   # 4way | 6way
+
+# ---- scheme table ----
+schemes:
+  4way:
+    # build_iemocap_manifest_jsonl.py 输出路径（你按自己的机器修改）
+    manifest_path: 'manifest_iemocap_4way_STRICT.jsonl'
+    labels: [happy, sad, neutral, angry]
+
+  6way:
+    manifest_path: 'manifest_iemocap_6way_STRICT.jsonl'
+    labels: [happy, sad, neutral, angry, excited, frustrated]
+
+# ---- (optional) fallback default fields ----
+
+
+manifest_path: 'manifest_iemocap_6way_STRICT.jsonl'
+labels: [happy, sad, neutral, angry, excited, frustrated]
+
+# ---- protocol: 5-fold speaker-independent CV (leave-one-session-out) ----
+# IEMOCAP 一共 5 个 Session，每个 Session 2 个说话人。
+# group_key=session 约等于：每折留 1 个 session 作为 test（严格说话人无关）。
+protocol:
+  type: group_kfold
+  group_key: session      # manifest 里由 build_iemocap_manifest_jsonl.py 写入
+  n_splits: 5
+  seed: 42
+  kfold_method: blocks    # 固定按 session=1..5 分折（fold0->S1, fold1->S2, ...）
+  val_ratio_in_train: 0.10
+
+# ---- below are placeholders kept for compatibility (not used in npy-feature training) ----
+audio:
+  sample_rate: 16000
+  max_seconds: 10.0
+  pad_mode: right
+
+video:
+  fps: 25
+  num_frames: 32
+  resize: 112
+  center_crop: 112
