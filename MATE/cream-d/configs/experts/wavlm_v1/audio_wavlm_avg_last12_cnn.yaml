@@ -1,0 +1,42 @@
+exp_name: cremad_audio_wavlm_avg_last12_cnn
+expert:
+  type: audio_WavLM_experts
+  feat_root: 'audio_wavlm_avg_last12'
+  input_dim: 1024
+  num_classes: 6
+
+  # ===== 结构切换点 =====
+  method: cnn
+  hidden_dim: 256
+  num_layers: 3
+  dropout: 0.25
+  kernel_size: 3
+
+  # ===== 数据读取（保持与你 whisper 一致）=====
+  max_frames: 600
+  pad_mode: right
+  mmap: false
+
+  # ===== frozen 特征增广（如果你的 expert/dataset 支持则生效；不支持也不会报错）=====
+  time_mask_prob: 0.5
+  time_mask_max_width: 20
+  time_mask_num: 2
+
+train:
+  epochs: 30
+  batch_size: 64
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  scheduler: cosine
+  warmup_ratio: 0.05
+  grad_clip: 5.0
+  early_stop:
+    enabled: true
+    patience: 8
+    metric: uar
+
+loss:
+  type: weighted_ce
+
+log:
+  save_preds: true

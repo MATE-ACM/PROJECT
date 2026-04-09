@@ -1,0 +1,27 @@
+exp_name: cremad_video_hsemotion_transformer
+
+expert:
+  type: video_experts
+  feat_root: 'hsemotion_enet_b2_7_seq_npz'
+  ext: .npz
+  feat_key: x
+  input_dim: 1408
+  num_classes: 6
+
+  mode: seq
+  encoder: transformer
+  pool: attn_stats
+  hidden_dim: 256
+  num_layers: 2
+  nhead: 4
+  ffn_dim: 1024
+  dropout: 0.4
+  attn_hidden: 128
+
+  max_frames: 300
+  pad_mode: right
+
+train: {epochs: 30, batch_size: 64, lr: 1.0e-3, weight_decay: 1.0e-4, scheduler: cosine, warmup_ratio: 0.05, grad_clip: 5.0,
+  early_stop: {enabled: true, patience: 8, metric: uar}}
+loss: {type: weighted_ce}
+log: {save_preds: true}

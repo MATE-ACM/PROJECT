@@ -1,0 +1,43 @@
+exp_name: cremad_whisper_transformer_attentive
+
+expert:
+  type: audio_whisper_experts
+  feat_root: 'audio_whisper'
+  input_dim: 1280
+  num_classes: 6
+
+  encoder: transformer
+  pool: attn_stats
+
+  hidden_dim: 256
+  num_layers: 4
+  num_heads: 4
+  max_pos_len: 2000
+  dropout: 0.20
+
+  max_frames: 600
+  pad_mode: right
+  mmap: false
+
+  time_mask_prob: 0.5
+  time_mask_max_width: 20
+  time_mask_num: 2
+
+train:
+  epochs: 30
+  batch_size: 64
+  lr: 8.0e-4
+  weight_decay: 1.0e-4
+  scheduler: cosine
+  warmup_ratio: 0.05
+  grad_clip: 5.0
+  early_stop:
+    enabled: true
+    patience: 8
+    metric: uar
+
+loss:
+  type: weighted_ce
+
+log:
+  save_preds: true

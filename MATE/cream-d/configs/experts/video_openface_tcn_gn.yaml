@@ -1,0 +1,26 @@
+exp_name: cremad_video_openface_tcn_gn
+
+expert:
+  type: video_experts
+  feat_root: 'openface_npz_v2'
+  ext: .npz
+  feat_key: x
+  input_dim: 22
+  num_classes: 6
+
+  mode: seq
+  encoder: tcn_gn
+  pool: attn_stats
+  hidden_dim: 128
+  num_layers: 3
+  kernel_size: 3
+  dropout: 0.3
+  attn_hidden: 128
+
+  max_frames: 300
+  pad_mode: right
+
+train: {epochs: 30, batch_size: 64, lr: 1.0e-3, weight_decay: 1.0e-4, scheduler: cosine, warmup_ratio: 0.05, grad_clip: 5.0,
+  early_stop: {enabled: true, patience: 8, metric: uar}}
+loss: {type: weighted_ce}
+log: {save_preds: true}
