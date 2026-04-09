@@ -1,0 +1,54 @@
+exp_name: ravdess_fusion_wavlm_avg_last12_hsemotion_lmf
+
+expert:
+  # IMPORTANT: must start with "fusion_" to trigger fusion dataloader
+  type: fusion_av_lmf
+
+  # ===== feature roots (EDIT THESE PATHS) =====
+  # audio: Whisper frame features (.npy) -> [Ta, 1280]
+  audio_feat_root: 'audio_wavlm_avg_last12'
+  audio_ext: .npy
+  audio_input_dim: 1024
+
+  video_feat_root: 'hsemotion_enet_b2_7_seq_npz'
+  video_ext: .npz
+  video_feat_key: x
+  video_input_dim: 1408
+
+  num_classes: 8
+
+  # ===== model hyperparams =====
+  hidden_dim: 256
+  dropout: 0.3
+  use_pos_enc: true
+  pos_max_len: 4000
+
+  # small modality encoders (cheap)
+  num_layers_audio: 1
+  num_layers_video: 1
+  nhead: 4
+  ffn_dim: 1024
+  attn_hidden: 128
+
+  # LMF specific
+  lmf_rank: 8
+  fusion_out_dim: 256
+
+  # ===== dataloader padding =====
+  max_frames_audio: 600
+  max_frames_video: 300
+  pad_mode: right
+  pin_memory: true
+
+train:
+  epochs: 35
+  batch_size: 48
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  scheduler: cosine
+  warmup_ratio: 0.05
+  grad_clip: 5.0
+  early_stop: {enabled: true, patience: 10, metric: uar}
+
+loss: {type: weighted_ce}
+log: {save_preds: true}

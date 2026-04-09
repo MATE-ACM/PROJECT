@@ -1,0 +1,27 @@
+exp_name: ravdess_video_openface_transformer
+
+expert:
+  type: video_experts
+  feat_root: 'openface'
+  ext: .npz
+  feat_key: x
+  input_dim: 35
+  num_classes: 8
+
+  mode: seq
+  encoder: transformer
+  pool: attn_stats
+  hidden_dim: 128
+  num_layers: 2
+  nhead: 4
+  ffn_dim: 512
+  dropout: 0.3
+  attn_hidden: 128
+
+  max_frames: 300
+  pad_mode: right
+
+train: {epochs: 30, batch_size: 64, lr: 1.0e-3, weight_decay: 1.0e-4, scheduler: cosine, warmup_ratio: 0.05, grad_clip: 5.0,
+  early_stop: {enabled: true, patience: 8, metric: uar}}
+loss: {type: weighted_ce}
+log: {save_preds: true}

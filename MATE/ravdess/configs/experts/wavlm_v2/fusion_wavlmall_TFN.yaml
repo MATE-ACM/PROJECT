@@ -1,0 +1,49 @@
+exp_name: ravdess_fusion_wavlmall_hsemotion_tfnlite
+
+expert:
+  type: fusion_av_tfnlite
+
+  # ===== EDIT PATHS =====
+  audio_feat_root: 'audio_wavlm_avg_all'
+  audio_ext: .npy
+  audio_input_dim: 1024
+
+  video_feat_root: 'hsemotion_enet_b2_7_seq_npz'
+  video_ext: .npz
+  video_feat_key: x
+  video_input_dim: 1408
+
+  num_classes: 8
+
+  hidden_dim: 256
+  dropout: 0.35
+  use_pos_enc: true
+  pos_max_len: 4000
+
+  num_layers_audio: 1
+  num_layers_video: 1
+  nhead: 4
+  ffn_dim: 1024
+  attn_hidden: 128
+
+  # TFN-lite specific
+  tfn_proj_dim: 64
+  fusion_out_dim: 256
+
+  max_frames_audio: 600
+  max_frames_video: 300
+  pad_mode: right
+  pin_memory: true
+
+train:
+  epochs: 40
+  batch_size: 48
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  scheduler: cosine
+  warmup_ratio: 0.05
+  grad_clip: 5.0
+  early_stop: {enabled: true, patience: 10, metric: uar}
+
+loss: {type: weighted_ce}
+log: {save_preds: true}

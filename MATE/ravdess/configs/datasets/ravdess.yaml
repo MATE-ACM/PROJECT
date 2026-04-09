@@ -1,0 +1,34 @@
+name: ravdess
+manifest_path: 'manifest.jsonl'
+
+# Labels (edit as needed)
+labels: [neutral, calm, happy, sad, angry, fearful,disgust,surprised]
+
+
+protocol:
+  type: group_kfold
+  group_key: speaker_id
+  n_splits: 6
+  seed: 42
+  kfold_method: blocks        # 关键：严格按演员ID 1-4 / 5-8 / ... 分折
+  val_ratio_in_train: 0.10
+
+
+
+audio:
+  sample_rate: 16000
+  max_seconds: 4.0
+  pad_mode: right  # right|center
+  augment:
+    enabled: true
+    noise_snr_db: [5, 20]
+    specaugment:
+      enabled: true
+      time_masks: 2
+      freq_masks: 2
+
+video:
+  fps: 25
+  num_frames: 32
+  resize: 112
+  center_crop: 112
