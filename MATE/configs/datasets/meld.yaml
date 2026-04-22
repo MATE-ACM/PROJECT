@@ -1,0 +1,26 @@
+# MELD dataset config
+# Keep split=train/val/test in the manifest to use the predefined split.
+
+name: meld
+
+manifest_path: 'data/manifest/manifest.jsonl'
+labels: [anger, disgust, fear, joy, neutral, sadness, surprise]
+
+protocol:
+  type: predefined_split
+  split_key: split
+  train_value: train
+  val_value: val
+  test_value: test
+
+# ---- placeholders kept for compatibility ----
+audio:
+  sample_rate: 16000
+  max_seconds: 12.0
+  pad_mode: right
+
+video:
+  fps: 25
+  num_frames: 32
+  resize: 112
+  center_crop: 112
